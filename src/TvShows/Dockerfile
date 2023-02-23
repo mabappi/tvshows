@@ -6,16 +6,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["MazeConsumer/MazeConsumer.csproj", "MazeConsumer/"]
-RUN dotnet restore "MazeConsumer/MazeConsumer.csproj"
+COPY ["TvShows/TvShows.csproj", "TvShows/"]
+RUN dotnet restore "TvShows/TvShows.csproj"
 COPY . .
-WORKDIR "/src/MazeConsumer"
-RUN dotnet build "MazeConsumer.csproj" -c Release -o /app/build
+WORKDIR "/src/TvShows"
+RUN dotnet build "TvShows.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "MazeConsumer.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "TvShows.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MazeConsumer.dll"]
+ENTRYPOINT ["dotnet", "TvShows.dll"]

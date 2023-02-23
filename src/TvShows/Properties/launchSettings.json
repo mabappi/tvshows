@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "MazeConsumer": {
+    "TvShows": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -8,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5011"
+      "applicationUrl": "https://localhost:7022;http://localhost:5011"
     },
     "IIS Express": {
       "commandName": "IISExpress",
