@@ -11,8 +11,8 @@ public class IndexingService : IIndexingService
 
     public IndexingService(IConfiguration configuration, ILogger<IndexingService> logger)
     {
-        _storeDirectory = configuration["StoreDirectory"];
-        _indexingServiceUrl = configuration["IndexingServiceUrl"];
+        _storeDirectory = configuration.GetValue<string>("StoreDirectory") ?? "tvmazeData";
+        _indexingServiceUrl = configuration.GetValue<string>("IndexingServiceUrl") ?? "http://indexingservice/";
         _logger = logger;
     }
     public async Task Index(int pageNumber, IEnumerable<TvShow> shows)

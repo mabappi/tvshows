@@ -1,7 +1,7 @@
-﻿namespace MazeConsumer.Services
+﻿namespace MazeConsumer.Services;
+
+public interface IScraperService
 {
-    public interface IScraperService
-    {
-        Task Scrap();
-    }
+    Task Scrap();
+    bool IsRunning { get; }
 }

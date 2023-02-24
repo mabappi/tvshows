@@ -1,7 +1,6 @@
-﻿namespace MazeConsumer.Services
+﻿namespace MazeConsumer.Services;
+
+public interface IIndexingService
 {
-    public interface IIndexingService
-    {
-        Task Index(int pageNumber, IEnumerable<TvShow> shows);
-    }
+    Task Index(int pageNumber, IEnumerable<TvShow> shows);
 }

@@ -17,9 +17,9 @@ public class IngestService : IIngestService
     public async Task Ingest(ScaperData scaperData)
     {
         var response = await _mazeRestClient.GetTvShows(scaperData.PageNumber);
-        if (!response.IsSuccessful)
+        if (response?.Data == null || !response.IsSuccessful)
         {
-            _logger.LogWarning($"Failed to fetch Tv Shows for page {scaperData.PageNumber}. {response.ErrorMessage}");
+            _logger.LogError($"Failed to fetch Tv Shows for page {scaperData.PageNumber}. {response.ErrorMessage}");
             return;
         }
         await GetCast(response.Data);
@@ -27,14 +27,14 @@ public class IngestService : IIngestService
         scaperData.RowFetched = response.Data.Count();
     }
 
-    private async Task GetCast(IEnumerable<TvShow>? tvShows)
+    private async Task GetCast(IEnumerable<TvShow> tvShows)
     {
         foreach (var tvShow in tvShows)
         {
             var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
-            if (!response.IsSuccessful)
+            if (response?.Data == null || !response.IsSuccessful)
             {
-                _logger.LogWarning($"Failed to get Cast Information for {tvShow.Id} : {tvShow.Name}. {response.ErrorMessage}");
+                _logger.LogError($"Failed to get Cast Information for {tvShow.Id} : {tvShow.Name}. {response.ErrorMessage}");
                 continue;
             }
             tvShow.Casts = response.Data;

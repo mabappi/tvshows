@@ -6,7 +6,7 @@ public class MazeRestClient : IMazeRestClient
 {
     private readonly string _apiUrl;
 
-    public MazeRestClient(IConfiguration configuration) => _apiUrl = configuration["ApiUrl"];
+    public MazeRestClient(IConfiguration configuration) => _apiUrl = configuration.GetValue<string>("ApiUrl") ?? "http://api.tvmaze.com/";
 
     public async Task<RestResponse<IEnumerable<TvShow>>> GetTvShows(int pageNumber) => await CallRestApi<IEnumerable<TvShow>>($"{_apiUrl}shows?page={pageNumber}");
 

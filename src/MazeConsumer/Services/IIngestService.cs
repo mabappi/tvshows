@@ -1,9 +1,8 @@
 ﻿using MazeConsumer.Models;
 
-namespace MazeConsumer.Services
+namespace MazeConsumer.Services;
+
+public interface IIngestService
 {
-    public interface IIngestService
-    {
-        Task Ingest(ScaperData scaperData);
-    }
+    Task Ingest(ScaperData scaperData);
 }

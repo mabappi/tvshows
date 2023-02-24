@@ -5,22 +5,21 @@ namespace MazeConsumer.Services;
 
 public class ScraperService : IScraperService
 {
-    private readonly ILogger<ScraperService> _logger;
     private readonly IConfiguration _configuration;
     private readonly IIngestService _ingestService;
-    private IList<ScaperData> _scaperList;
+    private readonly IList<ScaperData> _scaperList;
     private static object _lockObject = new object();
 
-    public ScraperService(ILogger<ScraperService> logger, IConfiguration configuration, IIngestService ingestService)
+    public ScraperService(IConfiguration configuration, IIngestService ingestService)
     {
-        _logger = logger;
         _configuration = configuration;
         _ingestService = ingestService;
-        LoadScraperData();
+        _scaperList = LoadScraperData();
     }
 
     public async Task Scrap()
     {
+        IsRunning = true;
         int numberOfThread = _configuration.GetValue<int>("NumberOfThread");
         var taskList = new List<Task>();
         for (int i = 0; i < numberOfThread; i++)
@@ -28,6 +27,7 @@ public class ScraperService : IScraperService
             taskList.Add(Task.Factory.StartNew(ProcessScrap));
         }
         await Task.WhenAll(taskList);
+        IsRunning= false;
     }
 
     private void ProcessScrap()
@@ -59,15 +59,14 @@ public class ScraperService : IScraperService
         }
     }
 
-    private void LoadScraperData()
-    {
-        if (File.Exists(ScrapDataFileName))
-            _scaperList = JsonConvert.DeserializeObject<IList<ScaperData>>(File.ReadAllText(ScrapDataFileName));
-        else
-            _scaperList = new List<ScaperData>();
-    }
+    private IList<ScaperData> LoadScraperData() => 
+        File.Exists(ScrapDataFileName) 
+        ? JsonConvert.DeserializeObject<IList<ScaperData>>(File.ReadAllText(ScrapDataFileName)) ?? new List<ScaperData>()
+        : new List<ScaperData>();
 
     private void SaveScraperData() => File.WriteAllText(ScrapDataFileName, JsonConvert.SerializeObject(_scaperList));
 
-    private string ScrapDataFileName => Path.Combine(_configuration["StoreDirectory"], "SrcaperData.json");
+    public bool IsRunning { get; private set; }
+
+    private string ScrapDataFileName => Path.Combine(_configuration["StoreDirectory"] ?? "/tvmazeData", "SrcaperData.json");
 }

@@ -1,10 +1,9 @@
 ﻿using RestSharp;
 
-namespace MazeConsumer.Services
+namespace MazeConsumer.Services;
+
+public interface IMazeRestClient
 {
-    public interface IMazeRestClient
-    {
-        Task<RestResponse<IEnumerable<Cast>>> GetTvShowCast(int tvShowId);
-        Task<RestResponse<IEnumerable<TvShow>>> GetTvShows(int pageNumber);
-    }
+    Task<RestResponse<IEnumerable<Cast>>> GetTvShowCast(int tvShowId);
+    Task<RestResponse<IEnumerable<TvShow>>> GetTvShows(int pageNumber);
 }

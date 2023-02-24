@@ -14,13 +14,10 @@ public class ScraperHostedService : IHostedService, IDisposable
         _scraperService = scraperService;
     }
 
-    public Task StartAsync(CancellationToken token)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Scraper Hosted Service running.");
-
-        _timer = new Timer(DoWork, null, TimeSpan.Zero,
-            TimeSpan.FromDays(1));
-
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromDays(1));
         return Task.CompletedTask;
     }
 
@@ -30,17 +27,12 @@ public class ScraperHostedService : IHostedService, IDisposable
         await _scraperService.Scrap();
     }
 
-    public Task StopAsync(CancellationToken token)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Scraper Hosted Service running.");
-
+        _logger.LogInformation("Scraper Hosted Service stopping.");
         _timer?.Change(Timeout.Infinite, 0);
-
         return Task.CompletedTask;
     }
 
-    public void Dispose()
-    {
-        _timer?.Dispose();
-    }
+    public void Dispose() => _timer?.Dispose();
 }
