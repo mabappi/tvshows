@@ -1,42 +1,73 @@
-﻿using MazeConsumer.Models;
+using MazeConsumer.Models;
+using Newtonsoft.Json;
 
 namespace MazeConsumer.Services;
 
 public class ScraperService : IScraperService
 {
-    private readonly IMazeRestClient _mazeRestClient;
     private readonly ILogger<ScraperService> _logger;
-    private readonly IIndexingService _indexingService;
+    private readonly IConfiguration _configuration;
+    private readonly IIngestService _ingestService;
+    private IList<ScaperData> _scaperList;
+    private static object _lockObject = new object();
 
-    public ScraperService(IMazeRestClient mazeRestClient, IIndexingService indexingService, ILogger<ScraperService> logger)
+    public ScraperService(ILogger<ScraperService> logger, IConfiguration configuration, IIngestService ingestService)
     {
-        _mazeRestClient = mazeRestClient;
         _logger = logger;
-        _indexingService = indexingService;
-    }
-    public async Task Scrap(ScaperData scaperData)
-    {
-        var response = await _mazeRestClient.GetTvShows(scaperData.PageNumber);
-        if (!response.IsSuccessful)
-        {
-            _logger.LogWarning($"Failed to fetch Tv Shows for page {scaperData.PageNumber}. {response.ErrorMessage}");
-            return;
-        }
-        await GetCast(response.Data);
-        await _indexingService.Index(scaperData.PageNumber, response.Data);
+        _configuration = configuration;
+        _ingestService = ingestService;
+        LoadScraperData();
     }
 
-    private async Task GetCast(IEnumerable<TvShow>? tvShows)
+    public async Task Scrap()
     {
-        foreach (var tvShow in tvShows)
+        int numberOfThread = _configuration.GetValue<int>("NumberOfThread");
+        var taskList = new List<Task>();
+        for (int i = 0; i < numberOfThread; i++)
         {
-            var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
-            if (!response.IsSuccessful)
+            taskList.Add(Task.Factory.StartNew(ProcessScrap));
+        }
+        await Task.WhenAll(taskList);
+    }
+
+    private void ProcessScrap()
+    {
+        while (true)
+        {
+            var data = GetNext();
+            _ingestService.Ingest(data);
+            if (data.RowFetched == 0)
             {
-                _logger.LogWarning($"Failed to get Cast Information for {tvShow.Id} : {tvShow.Name}. {response.ErrorMessage}");
-                continue;
+                lock (_lockObject)
+                {
+                    _scaperList.Remove(data);
+                    SaveScraperData();
+                }
+                break;
             }
-            tvShow.Casts = response.Data;
         }
     }
+
+    private ScaperData GetNext()
+    {
+        lock (_lockObject)
+        {
+            var data = new ScaperData { PageNumber = _scaperList.Count + 1 };
+            _scaperList.Add(data);
+            SaveScraperData();
+            return data;
+        }
+    }
+
+    private void LoadScraperData()
+    {
+        if (File.Exists(ScrapDataFileName))
+            _scaperList = JsonConvert.DeserializeObject<IList<ScaperData>>(File.ReadAllText(ScrapDataFileName));
+        else
+            _scaperList = new List<ScaperData>();
+    }
+
+    private void SaveScraperData() => File.WriteAllText(ScrapDataFileName, JsonConvert.SerializeObject(_scaperList));
+
+    private string ScrapDataFileName => Path.Combine(_configuration["StoreDirectory"], "SrcaperData.json");
 }

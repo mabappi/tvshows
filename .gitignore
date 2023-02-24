@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 /src/data
 /src/esdata
+/src/MazeConsumer/tvmazeData

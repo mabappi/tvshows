@@ -1,3 +1,5 @@
+using Framework;
+using MazeConsumer.HostedServices;
 using MazeConsumer.Services;
 using Serilog;
 
@@ -8,9 +10,12 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext()
     .WriteTo.Console());
 
-builder.Services.AddScoped<IMazeRestClient, MazeRestClient>();
-builder.Services.AddTransient<IScraperService, ScraperService>();
-builder.Services.AddScoped<IIndexingService, IndexingService>();
+builder.Services.AddSingleton<IMazeRestClient, MazeRestClient>();
+builder.Services.AddSingleton<IIngestService, IngestService>();
+builder.Services.AddSingleton<IScraperService, ScraperService>();
+builder.Services.AddSingleton<IIndexingService, IndexingService>();
+
+builder.Services.AddHostedService<ScraperHostedService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,7 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.MapControllers();
 
 app.Run();

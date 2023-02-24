@@ -1,9 +1,7 @@
-﻿using MazeConsumer.Models;
-
-namespace MazeConsumer.Services
+﻿namespace MazeConsumer.Services
 {
     public interface IScraperService
     {
-        Task Scrap(ScaperData scaperData);
+        Task Scrap();
     }
 }
