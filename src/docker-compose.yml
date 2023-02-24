@@ -39,6 +39,20 @@ services:
       - "8001:80"
     networks:
       - vlan
+  
+  indexingservice:
+    container_name: indexingservice
+    image: ${DOCKER_REGISTRY-}indexingservice
+    build:
+      context: .
+      dockerfile: IndexingService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8002:80"
+    networks:
+      - vlan
       
   logs:
     image: datalust/seq:latest

@@ -1,3 +1,4 @@
+using MazeConsumer.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,16 +8,16 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext()
     .WriteTo.Console());
 
-// Add services to the container.
+builder.Services.AddScoped<IMazeRestClient, MazeRestClient>();
+builder.Services.AddTransient<IScraperService, ScraperService>();
+builder.Services.AddScoped<IIndexingService, IndexingService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
