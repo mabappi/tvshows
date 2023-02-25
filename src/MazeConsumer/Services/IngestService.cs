@@ -1,4 +1,4 @@
-﻿using MazeConsumer.Models;
+﻿using Framework;
 
 namespace MazeConsumer.Services;
 
@@ -14,7 +14,7 @@ public class IngestService : IIngestService
         _logger = logger;
         _indexingService = indexingService;
     }
-    public async Task Ingest(ScaperData scaperData)
+    public async Task Ingest(ScraperData scaperData)
     {
         var response = await _mazeRestClient.GetTvShows(scaperData.PageNumber);
         if (response?.Data == null || !response.IsSuccessful)

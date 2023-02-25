@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Framework;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace MazeConsumer.Services;

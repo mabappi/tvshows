@@ -1,4 +1,4 @@
-using MazeConsumer.Models;
+using Framework;
 using Newtonsoft.Json;
 
 namespace MazeConsumer.Services;
@@ -7,7 +7,7 @@ public class ScraperService : IScraperService
 {
     private readonly IConfiguration _configuration;
     private readonly IIngestService _ingestService;
-    private readonly IList<ScaperData> _scaperList;
+    private readonly IList<ScraperData> _scaperList;
     private static object _lockObject = new object();
 
     public ScraperService(IConfiguration configuration, IIngestService ingestService)
@@ -48,21 +48,21 @@ public class ScraperService : IScraperService
         }
     }
 
-    private ScaperData GetNext()
+    private ScraperData GetNext()
     {
         lock (_lockObject)
         {
-            var data = new ScaperData { PageNumber = _scaperList.Count + 1 };
+            var data = new ScraperData { PageNumber = _scaperList.Count + 1 };
             _scaperList.Add(data);
             SaveScraperData();
             return data;
         }
     }
 
-    private IList<ScaperData> LoadScraperData() => 
+    private IList<ScraperData> LoadScraperData() => 
         File.Exists(ScrapDataFileName) 
-        ? JsonConvert.DeserializeObject<IList<ScaperData>>(File.ReadAllText(ScrapDataFileName)) ?? new List<ScaperData>()
-        : new List<ScaperData>();
+        ? JsonConvert.DeserializeObject<IList<ScraperData>>(File.ReadAllText(ScrapDataFileName)) ?? new List<ScraperData>()
+        : new List<ScraperData>();
 
     private void SaveScraperData() => File.WriteAllText(ScrapDataFileName, JsonConvert.SerializeObject(_scaperList));
 

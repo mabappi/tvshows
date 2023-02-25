@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Framework;
+using RestSharp;
 
 namespace MazeConsumer.Services;
 

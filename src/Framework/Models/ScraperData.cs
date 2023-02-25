@@ -1,6 +1,6 @@
-namespace MazeConsumer.Models;
+namespace Framework;
 
-public class ScaperData
+public class ScraperData
 {
     public int PageNumber { get; set; }
     public int RowFetched { get; set; }

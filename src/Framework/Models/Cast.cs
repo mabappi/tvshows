@@ -1,4 +1,4 @@
-namespace MazeConsumer.Services;
+namespace Framework;
 
 public class Cast
 {

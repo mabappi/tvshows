@@ -1,7 +1,14 @@
 using Framework;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console());
 
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -12,12 +19,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseMiddleware<ExceptionHandlerMiddleware>();
 
-app.MapGet("/", (int pagenumber) =>
-{
-    return pagenumber;
-})
-.WithOpenApi();
+app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.MapControllers();
 
 app.Run();
