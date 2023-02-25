@@ -1,4 +1,6 @@
+using Framework;
 using Serilog;
+using TvShows.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -7,16 +9,15 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext()
     .WriteTo.Console());
 
-// Add services to the container.
-
+builder.Services
+    .AddScoped<ISearchService, SearchService>()
+    .AddScoped<IElasticSearchClient, ElasticSearchClient>();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

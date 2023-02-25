@@ -1,6 +1,6 @@
 ﻿namespace IndexingService.Services;
 
-public interface IElasticSearchClient
+public interface IIndexer
 {
     Task Index(int pageNumber);
 }

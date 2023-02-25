@@ -15,9 +15,10 @@ services:
     networks:
       - vlan
     depends_on:
-      - elasticsearch
       - logs
       - indexingservice
+    volumes:
+      - ./data:/data
 
   tvshows:
     container_name: tvshows
@@ -33,7 +34,6 @@ services:
     networks:
       - vlan
     depends_on:
-      - elasticsearch
       - logs
   
   indexingservice:
@@ -45,12 +45,17 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - FingerPrint=3dd5cc4581083b516fb8cbd3b7585aba303e5ab047f90044c5d5781f064a6019
+      - EsPassword=66NFren91Z4vDrgdkEOW
+      - EsUsername=elastic
+      - ElasticClientUrl=https://es01:9200
+    volumes:
+      - ./data:/data
     ports:
       - "8002:80"
     networks:
       - vlan
     depends_on:
-      - elasticsearch
       - logs
       
   logs:
@@ -60,8 +65,6 @@ services:
       resources:
         limits:
           memory: 300M
-    volumes:
-      - ./logs:/logs
     environment:
       - ACCEPT_EULA=Y
     networks:
@@ -70,41 +73,7 @@ services:
       - "8003:80"
       - "5341:5341"  
 
-  elasticsearch:
-     container_name: elasticsearch
-     image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
-     environment:
-      #- node.name=elasticsearch
-      #- cluster.name=es-docker-cluster
-      #- discovery.type=single-node
-      #- bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-     #ulimits:
-     # memlock:
-     #   soft: -1
-     #   hard: -1
-     # nofile:
-     #   soft: 65536
-     #   hard: 65536
-     #cap_add:
-     # - IPC_LOCK
-     ports:
-        - "9200:9200"
-#        - "9300:9300"
-     #volumes:
-     #   - ./esdata:/usr/share/elasticsearch/data
-     networks:
-        - vlan
-  kibana:
-     container_name: kibana   
-     image: kibana:8.6.2
-     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-     ports:
-         - "5601:5601"
-     networks:
-         - vlan
-     depends_on:
-         - elasticsearch
 networks:
   vlan:
+    external: true
+  

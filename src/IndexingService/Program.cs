@@ -1,4 +1,5 @@
 using Framework;
+using IndexingService.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,10 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Services(services)
     .Enrich.FromLogContext()
     .WriteTo.Console());
+
+builder.Services
+    .AddScoped<IElasticSearchClient, ElasticSearchClient>()
+    .AddScoped<IIndexer, Indexer>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

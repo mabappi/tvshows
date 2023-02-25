@@ -1,22 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using TvShows.Services;
 
 namespace MazeConsumer.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class HomeController : ControllerBase
+[Route("/")]
+public class HomeController : Controller
 {
+    private readonly ISearchService _searchService;
 
-    private readonly ILogger<HomeController> _logger;
+    public HomeController(ISearchService searchService) => _searchService = searchService;
 
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
-    [HttpGet(Name = "Fetch")]
-    public async Task<IActionResult> Fetch()
-    {
-        return Ok("Running");
-    }
+    [HttpGet]
+    public async Task<IActionResult> Get(int pageNumber, int pageSize) =>
+        Json(await _searchService.Search(pageNumber, pageSize));
 }

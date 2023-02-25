@@ -17,8 +17,8 @@ public class HomeController : ControllerBase
         _ = Task.Run(async () => 
         { 
             using var scope = _serviceScopeFactory.CreateScope();
-            var client = scope.ServiceProvider.GetRequiredService<IElasticSearchClient>();
-            await client.Index(pageNumber); 
+            var indexer = scope.ServiceProvider.GetRequiredService<IIndexer>();
+            await indexer.Index(pageNumber); 
         });
         return Ok();
     }
