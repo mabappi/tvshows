@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.6'
 
 services:
   mazeconsumer:
@@ -10,6 +10,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - IndexingServiceUrl=http://indexingservice/
+      - NumberOfThread=1
     ports:
       - "8000:80"
     networks:
@@ -29,6 +31,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - FingerPrint=3dd5cc4581083b516fb8cbd3b7585aba303e5ab047f90044c5d5781f064a6019
+      - EsPassword=66NFren91Z4vDrgdkEOW
+      - EsUsername=elastic
+      - ElasticClientUrl=https://es01:9200
     ports:
       - "8001:80"
     networks:

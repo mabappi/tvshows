@@ -30,12 +30,13 @@ public class ScraperService : IScraperService
         IsRunning= false;
     }
 
-    private void ProcessScrap()
+    private async Task ProcessScrap()
     {
         while (true)
         {
             var data = GetNext();
-            _ingestService.Ingest(data);
+            
+            await _ingestService.Ingest(data);
             if (data.RowFetched == 0)
             {
                 lock (_lockObject)
