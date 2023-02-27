@@ -6,13 +6,13 @@ public class IngestService : IIngestService
 {
     private readonly IMazeRestClient _mazeRestClient;
     private readonly ILogger<IngestService> _logger;
-    private readonly IIndexingService _indexingService;
+    private readonly IElasticSearchClient _elasticSearchClient;
 
-    public IngestService(IMazeRestClient mazeRestClient, IIndexingService indexingService, ILogger<IngestService> logger)
+    public IngestService(IMazeRestClient mazeRestClient, IElasticSearchClient elasticSearchClient, ILogger<IngestService> logger)
     {
         _mazeRestClient = mazeRestClient;
         _logger = logger;
-        _indexingService = indexingService;
+        _elasticSearchClient = elasticSearchClient;
     }
     public async Task Ingest(ScraperData scraperData)
     {
@@ -23,8 +23,9 @@ public class IngestService : IIngestService
             _logger.LogError($"Failed to fetch Tv Shows for page {scraperData.PageNumber}.");
             return;
         }
+        _logger.LogInformation($"Tv Shows received: {response.Count()}");
         await GetCast(response);
-        await _indexingService.Index(scraperData.PageNumber, response);
+        await _elasticSearchClient.Index(response);
         scraperData.RowFetched = response.Count();
     }
 
@@ -32,6 +33,7 @@ public class IngestService : IIngestService
     {
         foreach (var tvShow in tvShows)
         {
+            _logger.LogInformation("Fetching cast information for show: {TvShow}", tvShow.Name);
             var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
             if (response == null)
             {

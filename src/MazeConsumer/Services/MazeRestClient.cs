@@ -7,8 +7,13 @@ namespace MazeConsumer.Services;
 public class MazeRestClient : IMazeRestClient
 {
     private readonly string _apiUrl;
+    private readonly ILogger<MazeRestClient> _logger;
 
-    public MazeRestClient(IConfiguration configuration) => _apiUrl = configuration.GetValue<string>("ApiUrl") ?? "http://api.tvmaze.com/";
+    public MazeRestClient(IConfiguration configuration, ILogger<MazeRestClient> logger)
+    {
+        _apiUrl = configuration.GetValue<string>("ApiUrl") ?? "http://api.tvmaze.com/";
+        _logger = logger;
+    }
 
     public async Task<IEnumerable<TvShow>> GetTvShows(int pageNumber) => await CallRestApi<IEnumerable<TvShow>>($"{_apiUrl}shows?page={pageNumber}");
 
@@ -20,12 +25,13 @@ public class MazeRestClient : IMazeRestClient
         var response = await restClient.ExecuteAsync<T>(new RestRequest(apiUrl));
         if (response.StatusCode == HttpStatusCode.TooManyRequests)
         {
+            _logger.LogWarning("Too many Request due to rate limiter. Waiting 10 seconds. {Response}", response.ErrorMessage);
             Thread.Sleep(TimeSpan.FromSeconds(10));
             response = await restClient.ExecuteAsync<T>(new RestRequest(apiUrl));
         }
         if(response.StatusCode == HttpStatusCode.OK)    
             return response?.Data;
-        
+        _logger.LogError(response.ErrorException, response.ErrorMessage);
         return null;
     }
 }

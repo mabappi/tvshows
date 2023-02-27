@@ -10,7 +10,7 @@ internal class IngestServiceBuilder : BuilderBase<IngestService>
 {
     protected override IngestService BuildInternal()
     {
-        return new IngestService(Get<IMazeRestClient>(), Get<IIndexingService>(), Get<ILogger<IngestService>>());
+        return new IngestService(Get<IMazeRestClient>(), Get<IElasticSearchClient>(), Get<ILogger<IngestService>>());
     }
 
     internal IngestServiceBuilder WithGetTvShowCallReturnsData()

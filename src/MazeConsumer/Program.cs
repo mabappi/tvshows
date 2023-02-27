@@ -13,7 +13,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 builder.Services.AddSingleton<IMazeRestClient, MazeRestClient>();
 builder.Services.AddSingleton<IIngestService, IngestService>();
 builder.Services.AddSingleton<IScraperService, ScraperService>();
-builder.Services.AddSingleton<IIndexingService, IndexingService>();
+builder.Services.AddSingleton<IElasticSearchClient, ElasticSearchClient>();
 
 builder.Services.AddHostedService<ScraperHostedService>();
 

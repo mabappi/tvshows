@@ -34,7 +34,7 @@ public class ScraperService : IScraperService
     {
         while (true)
         {
-            var data = GetNext();
+            var data = GetNextPage();
             
             await _ingestService.Ingest(data);
             if (data.RowFetched == 0)
@@ -49,7 +49,7 @@ public class ScraperService : IScraperService
         }
     }
 
-    private ScraperData GetNext()
+    private ScraperData GetNextPage()
     {
         lock (_lockObject)
         {
