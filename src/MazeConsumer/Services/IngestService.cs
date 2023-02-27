@@ -14,18 +14,18 @@ public class IngestService : IIngestService
         _logger = logger;
         _indexingService = indexingService;
     }
-    public async Task Ingest(ScraperData scaperData)
+    public async Task Ingest(ScraperData scraperData)
     {
-        _logger.LogInformation("Processing Page - {Page}", scaperData.PageNumber);
-        var response = await _mazeRestClient.GetTvShows(scaperData.PageNumber);
+        _logger.LogInformation("Processing Page - {Page}", scraperData.PageNumber);
+        var response = await _mazeRestClient.GetTvShows(scraperData.PageNumber);
         if (response == null)
         {
-            _logger.LogError($"Failed to fetch Tv Shows for page {scaperData.PageNumber}.");
+            _logger.LogError($"Failed to fetch Tv Shows for page {scraperData.PageNumber}.");
             return;
         }
         await GetCast(response);
-        await _indexingService.Index(scaperData.PageNumber, response);
-        scaperData.RowFetched = response.Count();
+        await _indexingService.Index(scraperData.PageNumber, response);
+        scraperData.RowFetched = response.Count();
     }
 
     private async Task GetCast(IEnumerable<TvShow> tvShows)
