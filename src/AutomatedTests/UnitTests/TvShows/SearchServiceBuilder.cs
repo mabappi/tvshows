@@ -7,10 +7,7 @@ namespace UnitTests.TvShows;
 
 public class SearchServiceBuilder : BuilderBase<SearchService>
 {
-    protected override SearchService BuildInternal()
-    {
-        return new SearchService(Get<IElasticSearchClient>());
-    }
+    protected override SearchService BuildInternal() => new SearchService(Get<IElasticSearchClient>());
 
     internal SearchServiceBuilder WithElasticClientReturningTvShows(int numberOfTvShows)
     {

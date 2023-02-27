@@ -18,14 +18,14 @@ public class IngestService : IIngestService
     {
         _logger.LogInformation("Processing Page - {Page}", scaperData.PageNumber);
         var response = await _mazeRestClient.GetTvShows(scaperData.PageNumber);
-        if (response?.Data == null || !response.IsSuccessful)
+        if (response == null)
         {
-            _logger.LogError(response.ErrorException, $"Failed to fetch Tv Shows for page {scaperData.PageNumber}. {response.ErrorMessage}");
+            _logger.LogError($"Failed to fetch Tv Shows for page {scaperData.PageNumber}.");
             return;
         }
-        await GetCast(response.Data);
-        await _indexingService.Index(scaperData.PageNumber, response.Data);
-        scaperData.RowFetched = response.Data.Count();
+        await GetCast(response);
+        await _indexingService.Index(scaperData.PageNumber, response);
+        scaperData.RowFetched = response.Count();
     }
 
     private async Task GetCast(IEnumerable<TvShow> tvShows)
@@ -33,12 +33,12 @@ public class IngestService : IIngestService
         foreach (var tvShow in tvShows)
         {
             var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
-            if (response?.Data == null || !response.IsSuccessful)
+            if (response == null)
             {
-                _logger.LogError(response.ErrorException, $"Failed to get Cast Information for {tvShow.Id} : {tvShow.Name}. {response.ErrorMessage}");
+                _logger.LogError($"Failed to get Cast Information for {tvShow.Id} : {tvShow.Name}.");
                 continue;
             }
-            tvShow.Casts = response.Data;
+            tvShow.Casts = response;
         }
     }
 }

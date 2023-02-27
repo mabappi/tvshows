@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Common.csproj" />
+    <ProjectReference Include="..\..\MazeConsumer\MazeConsumer.csproj" />
     <ProjectReference Include="..\..\TvShows\TvShows.csproj" />
   </ItemGroup>
 
