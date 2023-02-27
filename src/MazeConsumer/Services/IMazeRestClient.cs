@@ -1,4 +1,4 @@
-﻿using Framework;
+﻿using Common;
 using RestSharp;
 
 namespace MazeConsumer.Services;

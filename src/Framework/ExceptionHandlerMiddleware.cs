@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace Framework;
+namespace Common;
 
 public class ExceptionHandlerMiddleware
 {

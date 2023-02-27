@@ -1,4 +1,4 @@
-﻿using Framework;
+﻿using Common;
 
 namespace MazeConsumer.Services;
 

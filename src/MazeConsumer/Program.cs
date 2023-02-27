@@ -1,4 +1,4 @@
-using Framework;
+using Common;
 using MazeConsumer.HostedServices;
 using MazeConsumer.Services;
 using Serilog;

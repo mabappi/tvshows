@@ -1,4 +1,6 @@
-﻿namespace Framework;
+﻿using Common;
+
+namespace MazeConsumer.Services;
 
 public interface IIndexingService
 {

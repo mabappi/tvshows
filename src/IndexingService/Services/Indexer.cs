@@ -1,4 +1,4 @@
-﻿using Framework;
+﻿using Common;
 using Newtonsoft.Json;
 
 namespace IndexingService.Services;

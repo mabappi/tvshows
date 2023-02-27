@@ -3,7 +3,7 @@ using Elastic.Transport;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Framework;
+namespace Common;
 
 public class ElasticSearchClient : IElasticSearchClient
 {

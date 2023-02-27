@@ -1,4 +1,4 @@
-﻿using Framework;
+﻿using Common;
 
 namespace TvShows.Services;
 
@@ -10,13 +10,15 @@ public class SearchService : ISearchService
 
     public async Task<IEnumerable<dynamic>> Search(int pageNumber, int pageSize)
     {
-        var result = await _elasticSearchClient.Search<TvShow>(pageNumber, pageSize);
-        
-        return result.Select(x => new
+        if (pageNumber == 0 || pageSize == 0)
+            return Enumerable.Empty<dynamic>();
+        return (await _elasticSearchClient.Search<TvShow>(pageNumber, pageSize))
+        .Select(x => new
         {
             id = x.Id,
             name = x.Name,
-            cast = x.Casts.OrderBy(o => o.Person.Birthday).Select(c => new {id = c.Person.Id, name = c.Person.Name, birthday = c.Person.Birthday})
+            cast = x.Casts.OrderBy(o => o.Person.Birthday)
+            .Select(c => new { id = c.Person.Id, name = c.Person.Name, birthday = c.Person.Birthday })
         });
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace Framework
+﻿namespace Common;
+
+public interface IElasticSearchClient
 {
-    public interface IElasticSearchClient
-    {
-        Task Index<T>(IEnumerable<T> items);
-        Task<IEnumerable<T>> Search<T>(int pageNumber, int pageSize);
-    }
+    Task Index<T>(IEnumerable<T> items);
+    Task<IEnumerable<T>> Search<T>(int pageNumber, int pageSize);
 }
