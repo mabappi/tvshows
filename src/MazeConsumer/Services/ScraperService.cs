@@ -69,5 +69,5 @@ public class ScraperService : IScraperService
 
     public bool IsRunning { get; private set; }
 
-    private string ScrapDataFileName => Path.Combine(_configuration["StoreDirectory"] ?? "/tvmazeData", "SrcaperData.json");
+    private string ScrapDataFileName => Path.Combine(_configuration["DataDirectory"] ?? "/data", "SrcaperData.json");
 }

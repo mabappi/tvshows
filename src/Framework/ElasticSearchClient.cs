@@ -40,7 +40,7 @@ public class ElasticSearchClient : IElasticSearchClient
         {
             var response = await client.IndexAsync(item, request => request.Index(IndexName));
             if (!response.IsValidResponse)
-                _logger.LogWarning("Indexing failed. {ElasticError}", response.ElasticsearchServerError);
+                _logger.LogError("Indexing failed. {ElasticError}", response.ElasticsearchServerError);
         }
     }
 

@@ -15,7 +15,9 @@ services:
       - EsPassword=66NFren91Z4vDrgdkEOW
       - EsUsername=elastic
       - ElasticClientUrl=https://es01:9200
-
+      - DataDirectory=/data
+    volumes:
+      - ./data:/data  
     ports:
       - "8000:80"
     networks:

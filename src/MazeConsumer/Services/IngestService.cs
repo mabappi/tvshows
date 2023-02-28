@@ -14,6 +14,7 @@ public class IngestService : IIngestService
         _logger = logger;
         _elasticSearchClient = elasticSearchClient;
     }
+
     public async Task Ingest(ScraperData scraperData)
     {
         _logger.LogInformation("Processing Page - {Page}", scraperData.PageNumber);
@@ -27,13 +28,13 @@ public class IngestService : IIngestService
         await GetCast(response);
         await _elasticSearchClient.Index(response);
         scraperData.RowFetched = response.Count();
+        _logger.LogInformation("Processing Page - {Page} - Completed. Row fetch {Rows}", scraperData.PageNumber, scraperData.RowFetched);
     }
 
     private async Task GetCast(IEnumerable<TvShow> tvShows)
     {
         foreach (var tvShow in tvShows)
         {
-            _logger.LogInformation("Fetching cast information for show: {TvShow}", tvShow.Name);
             var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
             if (response == null)
             {

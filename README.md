@@ -8,8 +8,16 @@ Then
 ```
     sysctl -w vm.max_map_count=262144
 ```
+## Technology 
+- .NET 7.0
+- ElasticSearch
+- RestClient
+- Serilog -> For Structured Logging
+- Seq -> Log Sink
+
 ## To run the app
 - Clone the repository
+
 ### Configure Docker Network and Deploy Elastic Search
 - Open PowerShell or Command prompt and Navigate to src/
 - Create docker network by running 
@@ -54,16 +62,28 @@ Once all the container is running Open Browser
      http://localhost:8001/?pageNumber=1&pageSize=30
 ```
 
+## Automated Tests
+### Unit Tests
+- Using MsTest Testing Framework. Moq for mocking.
+
+### Acceptance Tests
+- End to end automated tests for TvShows Rest Api using SpecFlow.Net
+
 ### Description of Services
 #### Maze Consumer
 - Scrapper to downloads Tv Shows and related cast information.
-- Multi threaded. Number of thread can be configured by setting up 'NumberOfThread' in app settings or via docker-compose.
+- Vertically scalable using multi thread. Number of thread can be configured by setting up 'NumberOfThread' in app settings or via docker-compose.
 - Continues downloading Tv Shows using page number 1 till the api returns 0 tv shows.
-- After downloading each page sends api request to indexer service to further process and store information to Elastic search.
+- After downloading each page sends api request to Elastic search.
 - After initial download of all tv shows creates trigger for next run after 1 day.
 - Idea is this service will keep downloading new information every day.
 
-### Indexer Service
+### TvShow
+- Rest API to get paginated list of Tv Shows including Cast information. Cast information ordered by Birthday.
+- Api Endpoint: http://localhost:8001/?pageNumber=1&pageSize=30 
+
+### Indexer Service [Depricated]
+- No longer needed. MazeConsumer directly calls ElasticSearch to store information
 - Scable service - A thin layer before Elastic Search. 
 
 
