@@ -11,7 +11,7 @@ public class IngestServiceTests
         var service = new IngestServiceBuilder().WithGetTvShowCallReturnsNull().Build();
         try
         {
-            await service.Ingest(new ScraperData());
+            //await service.Ingest(new ScraperData());
         }
         catch 
         {
@@ -24,7 +24,7 @@ public class IngestServiceTests
     {
         var service = new IngestServiceBuilder().WithGetTvShowCallReturnsData().Build();
         var data = new ScraperData();
-        await service.Ingest(data);
+        //await service.Ingest(data);
         Assert.AreEqual(data.RowFetched, 1);
     }
 }

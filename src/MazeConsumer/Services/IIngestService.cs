@@ -4,5 +4,5 @@ namespace MazeConsumer.Services;
 
 public interface IIngestService
 {
-    Task Ingest(ScraperData scaperData);
+    Task Ingest();
 }

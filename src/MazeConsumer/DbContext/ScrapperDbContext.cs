@@ -6,7 +6,7 @@ namespace MazeConsumer.DbContext;
 public class ScrapperDbContext : IScrapperDbContext
 {
     private readonly IConfiguration _configuration;
-
+    private static object _lock = new object();
     public ScrapperDbContext(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -20,15 +20,23 @@ public class ScrapperDbContext : IScrapperDbContext
         ? JsonConvert.DeserializeObject<IList<ScraperData>>(File.ReadAllText(ScrapDataFileName)) ?? new List<ScraperData>()
         : new List<ScraperData>();
 
-    public void Save() => File.WriteAllText(
-        ScrapDataFileName,
-        JsonConvert.SerializeObject(Scrapers.Where(x => x.RowFetched != 0)));
+    public void Save()
+    {
+        lock(_lock ) 
+        {
+            File.WriteAllText(ScrapDataFileName,
+                JsonConvert.SerializeObject(Scrapers.Where(x => x.RowFetched != 0)));
+        }
+    }
 
     public ScraperData GetNextScraperData()
     {
-        var data = new ScraperData { PageNumber = Scrapers.Count + 1 };
-        Scrapers.Add(data);
-        Save();
+        ScraperData data;
+        lock (_lock)
+        {
+            data = new ScraperData { PageNumber = Scrapers.Count + 1 };
+            Scrapers.Add(data);
+        }
         return data;
     }
 

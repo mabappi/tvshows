@@ -1,5 +1,6 @@
 using Common;
 using MazeConsumer.DbContext;
+using System.Diagnostics;
 
 namespace MazeConsumer.Services;
 
@@ -8,12 +9,14 @@ public class ScraperService : IScraperService
     private readonly IConfiguration _configuration;
     private readonly IIngestService _ingestService;
     private readonly IScrapperDbContext _dbContext;
+    private readonly ILogger<ScraperService> _logger;
 
-    public ScraperService(IConfiguration configuration, IIngestService ingestService, IScrapperDbContext dbContext)
+    public ScraperService(IConfiguration configuration, IIngestService ingestService, IScrapperDbContext dbContext, ILogger<ScraperService> logger)
     {
         _configuration = configuration;
         _ingestService = ingestService;
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task Scrap()
@@ -21,21 +24,19 @@ public class ScraperService : IScraperService
         IsRunning = true;
         int numberOfThread = _configuration.GetValue<int>("NumberOfThread");
         var taskList = new List<Task>();
-        while (true)
+        var timer = new Stopwatch();
+        timer.Start();
+        for (int i = 0; i < numberOfThread; i++)
         {
-            for (int i = 0; i < numberOfThread; i++)
-            {
-                var data = _dbContext.GetNextScraperData();
-                taskList.Add(Task.Factory.StartNew(() => Process(data)));
-            }
-            Task.WaitAll(taskList.ToArray());
-            if (_dbContext.Scrapers.Any(x => x.RowFetched == 0))
-                break;
+            taskList.Add(Task.Factory.StartNew(Process));
         }
-        IsRunning= false;
+        Task.WaitAll(taskList.ToArray());
+        timer.Stop();
+        _logger.LogInformation("Completion time {Time}", timer.Elapsed.Minutes);
+        IsRunning = false;
     }
 
-    private void Process(ScraperData data) => _ingestService.Ingest(data).Wait();
+    private void Process() => _ingestService.Ingest().Wait();
 
     public bool IsRunning { get; private set; }
 }

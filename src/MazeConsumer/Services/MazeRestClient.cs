@@ -26,7 +26,7 @@ public class MazeRestClient : IMazeRestClient
         var policy = Policy
             .HandleResult<RestResponse<T>>(r => r.StatusCode == HttpStatusCode.TooManyRequests)
             .OrResult(r => r.StatusCode == HttpStatusCode.ServiceUnavailable)
-            .WaitAndRetryForeverAsync(retry => { return TimeSpan.FromSeconds(1); },
+            .WaitAndRetryForeverAsync(retry => { return TimeSpan.FromSeconds(5); },
             onRetry: (ex, timeSpan, retryCount) =>
             {
                 _logger.LogError(ex.Exception, "Retrying {Count}", retryCount);
@@ -36,8 +36,8 @@ public class MazeRestClient : IMazeRestClient
     }
     private async Task<RestResponse<T>> CallRestApi<T>(string apiUrl) where T : class
     {
-        using var restClient = new RestClient();
-        var response = await restClient.ExecuteAsync<T>(new RestRequest(apiUrl));
+        using var restClient = new RestClient(new RestClientOptions { MaxTimeout = 300000 });
+        var response = await restClient.ExecuteAsync<T>(new RestRequest(apiUrl) { Timeout = 300000 });
         if(!response.IsSuccessful) 
         {
             _logger.LogError(response.ErrorException, $"Status code: {response.StatusDescription}");

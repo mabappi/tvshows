@@ -1,4 +1,5 @@
 ﻿using Common;
+using MazeConsumer.DbContext;
 using MazeConsumer.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,7 +11,7 @@ internal class IngestServiceBuilder : BuilderBase<IngestService>
 {
     protected override IngestService BuildInternal()
     {
-        return new IngestService(Get<IMazeRestClient>(), Get<IElasticSearchClient>(), Get<ILogger<IngestService>>());
+        return new IngestService(Get<IMazeRestClient>(), Get<IScrapperDbContext>(), Get<IElasticSearchClient>(), Get<ILogger<IngestService>>());
     }
 
     internal IngestServiceBuilder WithGetTvShowCallReturnsData()
