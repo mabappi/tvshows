@@ -10,7 +10,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - NumberOfThread=1
+      - NumberOfThread=10
       - FingerPrint=3dd5cc4581083b516fb8cbd3b7585aba303e5ab047f90044c5d5781f064a6019
       - EsPassword=66NFren91Z4vDrgdkEOW
       - EsUsername=elastic

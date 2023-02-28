@@ -57,6 +57,7 @@ Once all the container is running Open Browser
 - For Tv Shows Search API: http://localhost:8001/ 
 ## Swagger
 - Tv Show Rest Api configured with Swagger.
+- http://localhost:8001/swagger/index.html
 - To Get Tv Show List 
 ```
      http://localhost:8001/?pageNumber=1&pageSize=30

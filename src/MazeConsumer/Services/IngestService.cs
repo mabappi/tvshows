@@ -33,15 +33,16 @@ public class IngestService : IIngestService
 
     private async Task GetCast(IEnumerable<TvShow> tvShows)
     {
-        foreach (var tvShow in tvShows)
+        tvShows.ToList().ForEach(async tvShow =>
         {
-            var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
-            if (response == null)
-            {
-                _logger.LogError($"Failed to get Cast Information for {tvShow.Id} : {tvShow.Name}.");
-                continue;
-            }
-            tvShow.Casts = response;
-        }
+            await GetCast(tvShow);
+        });
+    }
+
+    private async Task GetCast(TvShow tvShow)
+    {
+        _logger.LogInformation("Getting cast for {TvShow}", tvShow.Name);
+        var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
+        tvShow.Casts = response;
     }
 }

@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Services", "01. Service
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Base Library", "02. Base Library", "{5A8CC804-D940-45A5-90AD-8E7F1359770B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Conatiner Support", "04. Conatiner Support", "{6DB534E4-41F0-47E1-80EB-66D354219990}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Container Support", "04. Container Support", "{6DB534E4-41F0-47E1-80EB-66D354219990}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "AutomatedTests\UnitTests\UnitTests.csproj", "{FB6A859D-C9E3-4439-AC19-C5134958D0A4}"
 EndProject

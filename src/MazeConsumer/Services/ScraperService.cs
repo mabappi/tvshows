@@ -1,5 +1,5 @@
 using Common;
-using Newtonsoft.Json;
+using MazeConsumer.DbContext;
 
 namespace MazeConsumer.Services;
 
@@ -7,14 +7,13 @@ public class ScraperService : IScraperService
 {
     private readonly IConfiguration _configuration;
     private readonly IIngestService _ingestService;
-    private readonly IList<ScraperData> _scaperList;
-    private static object _lockObject = new object();
+    private readonly IScrapperDbContext _dbContext;
 
-    public ScraperService(IConfiguration configuration, IIngestService ingestService)
+    public ScraperService(IConfiguration configuration, IIngestService ingestService, IScrapperDbContext dbContext)
     {
         _configuration = configuration;
         _ingestService = ingestService;
-        _scaperList = LoadScraperData();
+        _dbContext = dbContext;
     }
 
     public async Task Scrap()
@@ -22,52 +21,21 @@ public class ScraperService : IScraperService
         IsRunning = true;
         int numberOfThread = _configuration.GetValue<int>("NumberOfThread");
         var taskList = new List<Task>();
-        for (int i = 0; i < numberOfThread; i++)
+        while (true)
         {
-            taskList.Add(Task.Factory.StartNew(ProcessScrap));
+            for (int i = 0; i < numberOfThread; i++)
+            {
+                var data = _dbContext.GetNextScraperData();
+                taskList.Add(Task.Factory.StartNew(() => Process(data)));
+            }
+            Task.WaitAll(taskList.ToArray());
+            if (_dbContext.Scrapers.Any(x => x.RowFetched == 0))
+                break;
         }
-        await Task.WhenAll(taskList);
         IsRunning= false;
     }
 
-    private async Task ProcessScrap()
-    {
-        while (true)
-        {
-            var data = GetNextPage();
-            
-            await _ingestService.Ingest(data);
-            if (data.RowFetched == 0)
-            {
-                lock (_lockObject)
-                {
-                    _scaperList.Remove(data);
-                    SaveScraperData();
-                }
-                break;
-            }
-        }
-    }
-
-    private ScraperData GetNextPage()
-    {
-        lock (_lockObject)
-        {
-            var data = new ScraperData { PageNumber = _scaperList.Count + 1 };
-            _scaperList.Add(data);
-            SaveScraperData();
-            return data;
-        }
-    }
-
-    private IList<ScraperData> LoadScraperData() => 
-        File.Exists(ScrapDataFileName) 
-        ? JsonConvert.DeserializeObject<IList<ScraperData>>(File.ReadAllText(ScrapDataFileName)) ?? new List<ScraperData>()
-        : new List<ScraperData>();
-
-    private void SaveScraperData() => File.WriteAllText(ScrapDataFileName, JsonConvert.SerializeObject(_scaperList));
+    private void Process(ScraperData data) => _ingestService.Ingest(data).Wait();
 
     public bool IsRunning { get; private set; }
-
-    private string ScrapDataFileName => Path.Combine(_configuration["DataDirectory"] ?? "/data", "SrcaperData.json");
 }

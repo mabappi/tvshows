@@ -8,7 +8,6 @@ public class IngestServiceTests
     [TestMethod]
     public async Task Ingest_WhenGetTvShowRestApiCallsFails_ShouldNotThrowException()
     {
-
         var service = new IngestServiceBuilder().WithGetTvShowCallReturnsNull().Build();
         try
         {
@@ -23,7 +22,6 @@ public class IngestServiceTests
     [TestMethod]
     public async Task Ingest_WhenGetTvShowRestApiCallsReturnsData_ShouldGetCastInfo()
     {
-
         var service = new IngestServiceBuilder().WithGetTvShowCallReturnsData().Build();
         var data = new ScraperData();
         await service.Ingest(data);
