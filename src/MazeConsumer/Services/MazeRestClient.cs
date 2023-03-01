@@ -1,6 +1,5 @@
 ﻿using Common;
 using Polly;
-using Polly.RateLimit;
 using RestSharp;
 using System.Net;
 
@@ -17,9 +16,11 @@ public class MazeRestClient : IMazeRestClient
         _logger = logger;
     }
 
-    public async Task<IEnumerable<TvShow>> GetTvShows(int pageNumber) => await CallRestApiWithRetry<IEnumerable<TvShow>>($"{_apiUrl}shows?page={pageNumber}");
+    public async Task<IEnumerable<TvShow>> GetTvShows(int pageNumber) 
+        => await CallRestApiWithRetry<IEnumerable<TvShow>>($"{_apiUrl}shows?page={pageNumber}");
 
-    public async Task<IEnumerable<Cast>> GetTvShowCast(int tvShowId) => await CallRestApiWithRetry<IEnumerable<Cast>>($"{_apiUrl}shows/{tvShowId}/cast");
+    public async Task<IEnumerable<Cast>> GetTvShowCast(int tvShowId) 
+        => await CallRestApiWithRetry<IEnumerable<Cast>>($"{_apiUrl}shows/{tvShowId}/cast");
 
     private async Task<T> CallRestApiWithRetry<T>(string apiUrl) where T : class
     {
@@ -27,13 +28,14 @@ public class MazeRestClient : IMazeRestClient
             .HandleResult<RestResponse<T>>(r => r.StatusCode == HttpStatusCode.TooManyRequests)
             .OrResult(r => r.StatusCode == HttpStatusCode.ServiceUnavailable)
             .WaitAndRetryForeverAsync(retry => { return TimeSpan.FromSeconds(5); },
-            onRetry: (ex, timeSpan, retryCount) =>
+            onRetry: (ex, retryCount, timeSpan) =>
             {
-                _logger.LogError(ex.Exception, "Retrying {Count}", retryCount);
+                _logger.LogError(ex.Exception, "Retry attempt {Count} in {Time}", retryCount, timeSpan);
             });
         var response = await policy.ExecuteAsync(async () => await CallRestApi<T>(apiUrl));
         return response.Data;
     }
+
     private async Task<RestResponse<T>> CallRestApi<T>(string apiUrl) where T : class
     {
         using var restClient = new RestClient(new RestClientOptions { MaxTimeout = 300000 });

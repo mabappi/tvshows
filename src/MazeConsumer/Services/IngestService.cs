@@ -46,10 +46,5 @@ public class IngestService : IIngestService
             await GetCast(tvShow);
         });
 
-    private async Task GetCast(TvShow tvShow)
-    {
-        _logger.LogInformation("Getting cast for {TvShow}", tvShow.Name);
-        var response = await _mazeRestClient.GetTvShowCast(tvShow.Id);
-        tvShow.Casts = response;
-    }
+    private async Task GetCast(TvShow tvShow) => tvShow.Casts = await _mazeRestClient.GetTvShowCast(tvShow.Id);
 }

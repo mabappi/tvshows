@@ -1,12 +1,10 @@
 ﻿using Common;
 
-namespace MazeConsumer.DbContext
-{
-    public interface IScrapperDbContext
-    {
-        IList<ScraperData> Scrapers { get; }
+namespace MazeConsumer.DbContext;
 
-        ScraperData GetNextScraperData();
-        void Save();
-    }
+public interface IScrapperDbContext
+{
+    IList<ScraperData> Scrapers { get; }
+    ScraperData GetNextScraperData();
+    void Save();
 }
