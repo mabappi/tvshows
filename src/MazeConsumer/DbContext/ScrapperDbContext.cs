@@ -40,5 +40,7 @@ public class ScrapperDbContext : IScrapperDbContext
         return data;
     }
 
+    public bool LastPage { get; set; } 
+
     private string ScrapDataFileName => Path.Combine(_configuration["DataDirectory"] ?? "/data", "SrcaperData.json");
 }

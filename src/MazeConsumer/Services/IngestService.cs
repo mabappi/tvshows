@@ -22,6 +22,8 @@ public class IngestService : IIngestService
     {
         while (true)
         {
+            if (_dbContext.LastPage)
+                break;
             var scraperData = _dbContext.GetNextScraperData();
             _logger.LogInformation("Processing Page - {Page}", scraperData.PageNumber);
             var response = await _mazeRestClient.GetTvShows(scraperData.PageNumber);
@@ -32,17 +34,21 @@ public class IngestService : IIngestService
             }
             _logger.LogInformation($"Tv Shows received: {response.Count()}");
             await GetCast(response);
-            await _elasticSearchClient.Index(response);
+            Task.Run(async () => await _elasticSearchClient.Index(response));
             scraperData.RowFetched = response.Count();
             _dbContext.Save();
             _logger.LogInformation("Processing Page - {Page} - Completed. Row fetch {Rows}", scraperData.PageNumber, scraperData.RowFetched);
             if (!response.Any())
+            {
+                _dbContext.LastPage = true;
                 break;
+            }
         }
     }
 
     private async Task GetCast(IEnumerable<TvShow> tvShows) => tvShows.ToList().ForEach(async tvShow =>
         {
+            _logger.LogInformation("Fetching cast for {TvShow}", tvShow.Name);
             await GetCast(tvShow);
         });
 

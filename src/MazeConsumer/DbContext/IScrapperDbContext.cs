@@ -7,4 +7,5 @@ public interface IScrapperDbContext
     IList<ScraperData> Scrapers { get; }
     ScraperData GetNextScraperData();
     void Save();
+    bool LastPage { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using Common;
+using Newtonsoft.Json;
 using Polly;
 using RestSharp;
 using System.Net;
@@ -24,22 +25,15 @@ public class MazeRestClient : IMazeRestClient
 
     private async Task<T> CallRestApiWithRetry<T>(string apiUrl) where T : class
     {
-        var policy = Policy
-            .HandleResult<RestResponse<T>>(r => r.StatusCode == HttpStatusCode.TooManyRequests)
-            .OrResult(r => r.StatusCode == HttpStatusCode.ServiceUnavailable)
-            .WaitAndRetryForeverAsync(retry => { return TimeSpan.FromSeconds(5); },
-            onRetry: (ex, retryCount, timeSpan) =>
-            {
-                _logger.LogError(ex.Exception, "Retry attempt {Count} in {Time}", retryCount, timeSpan);
-            });
-        var response = await policy.ExecuteAsync(async () => await CallRestApi<T>(apiUrl));
-        return response.Data;
+        var response = await PolicyHelper.GetPolicy().ExecuteAsync(async () => await CallRestApi(apiUrl));
+
+        return JsonConvert.DeserializeObject<T>(response.Content);
     }
 
-    private async Task<RestResponse<T>> CallRestApi<T>(string apiUrl) where T : class
+    private async Task<RestResponse> CallRestApi(string apiUrl) 
     {
         using var restClient = new RestClient(new RestClientOptions { MaxTimeout = 300000 });
-        var response = await restClient.ExecuteAsync<T>(new RestRequest(apiUrl) { Timeout = 300000 });
+        var response = await restClient.ExecuteAsync(new RestRequest(apiUrl) { Timeout = 300000 });
         if(!response.IsSuccessful) 
         {
             _logger.LogError(response.ErrorException, $"Status code: {response.StatusDescription}");
