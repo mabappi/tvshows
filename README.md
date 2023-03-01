@@ -1,4 +1,7 @@
 # tvshows
+## Assumptions
+- Assuming information fetched from TvMaze is static. 
+
 ## Note
 - If ElasticSearch Docker container fails to start
 ```
@@ -14,6 +17,8 @@ Then
 - RestClient
 - Serilog -> For Structured Logging
 - Seq -> Log Sink
+- Polly for retry
+- SpecFlow for Acceptance Tests
 
 ## To run the app
 - Clone the repository
@@ -78,6 +83,7 @@ Once all the container is running Open Browser
 - After downloading each page sends api request to Elastic search.
 - After initial download of all tv shows creates trigger for next run after 1 day.
 - Idea is this service will keep downloading new information every day.
+- Downloading all the tvshows including cast information takes 27 minutes (Number Of thread = 10)
 
 ### TvShow
 - Rest API to get paginated list of Tv Shows including Cast information. Cast information ordered by Birthday.
@@ -89,6 +95,5 @@ Once all the container is running Open Browser
 
 
 ### Notes
-- Exception scenarios not been implemented. e.g.
--- If all the services are not up and running, data lost will occur. Use of messaging service like RabbitMq or Kafka will ensure durability and integraty.
--- and many others :) 
+- Not all Exception scenarios been implemented. e.g.
+-- Handling last page - Last page might have more records every day. Need to re-fetch last page every day.

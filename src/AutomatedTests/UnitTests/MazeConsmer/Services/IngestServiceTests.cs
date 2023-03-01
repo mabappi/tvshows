@@ -8,10 +8,12 @@ public class IngestServiceTests
     [TestMethod]
     public async Task Ingest_WhenGetTvShowRestApiCallsFails_ShouldNotThrowException()
     {
-        var service = new IngestServiceBuilder().WithGetTvShowCallReturnsNull().Build();
+        var service = new IngestServiceBuilder()
+            .WithDbContext(null)
+            .WithGetTvShowCallReturnsNull().Build();
         try
         {
-            //await service.Ingest(new ScraperData());
+            await service.Ingest();
         }
         catch 
         {
@@ -22,9 +24,11 @@ public class IngestServiceTests
     [TestMethod]
     public async Task Ingest_WhenGetTvShowRestApiCallsReturnsData_ShouldGetCastInfo()
     {
-        var service = new IngestServiceBuilder().WithGetTvShowCallReturnsData().Build();
-        var data = new ScraperData();
-        //await service.Ingest(data);
+        var data = new ScraperData { PageNumber= 1 };
+        var service = new IngestServiceBuilder()
+            .WithDbContext(data)
+            .WithGetTvShowCallReturnsData().Build();
+        await service.Ingest();
         Assert.AreEqual(data.RowFetched, 1);
     }
 }
