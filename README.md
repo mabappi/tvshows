@@ -20,6 +20,9 @@ Then
 - Polly for retry
 - SpecFlow for Acceptance Tests
 
+## SpecFlow Visual Studio Extension
+= Install "SpecFlow for Visual Studio 2022" 
+
 ## To run the app
 - Clone the repository
 
@@ -74,6 +77,8 @@ Once all the container is running Open Browser
 
 ### Acceptance Tests
 - End to end automated tests for TvShows Rest Api using SpecFlow.Net
+#### Running Acceptance Tests
+- Run the application using docker-compose up -d before running specflow tests. 
 
 ### Description of Services
 #### Maze Consumer

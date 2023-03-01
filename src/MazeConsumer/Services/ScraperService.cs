@@ -1,5 +1,3 @@
-using Common;
-using MazeConsumer.DbContext;
 using System.Diagnostics;
 
 namespace MazeConsumer.Services;
@@ -8,14 +6,12 @@ public class ScraperService : IScraperService
 {
     private readonly IConfiguration _configuration;
     private readonly IIngestService _ingestService;
-    private readonly IScrapperDbContext _dbContext;
     private readonly ILogger<ScraperService> _logger;
 
-    public ScraperService(IConfiguration configuration, IIngestService ingestService, IScrapperDbContext dbContext, ILogger<ScraperService> logger)
+    public ScraperService(IConfiguration configuration, IIngestService ingestService, ILogger<ScraperService> logger)
     {
         _configuration = configuration;
         _ingestService = ingestService;
-        _dbContext = dbContext;
         _logger = logger;
     }
 
