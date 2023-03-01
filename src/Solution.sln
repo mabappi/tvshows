@@ -9,9 +9,9 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TvShows", "TvShows\TvShows.csproj", "{2D12A0CA-37C2-4F19-97A7-4B1C126625B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Framework\Common.csproj", "{3693A064-4980-4B83-AF2A-BACEA51D9AD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Framework\Common.csproj", "{3693A064-4980-4B83-AF2A-BACEA51D9AD0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. UnitTests", "03. UnitTests", "{B1363361-220E-4D39-A647-0C6AA419DF61}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. AutomatedTests", "03. AutomatedTests", "{B1363361-220E-4D39-A647-0C6AA419DF61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Services", "01. Services", "{7BA97681-5303-4665-807A-4CCD4EBAE059}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Container Support", "04. Container Support", "{6DB534E4-41F0-47E1-80EB-66D354219990}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "AutomatedTests\UnitTests\UnitTests.csproj", "{FB6A859D-C9E3-4439-AC19-C5134958D0A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceTests", "AutomatedTests\AcceptanceTests\AcceptanceTests.csproj", "{71DD7994-08A4-4261-A0BD-7C0FD7C61B45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{FB6A859D-C9E3-4439-AC19-C5134958D0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB6A859D-C9E3-4439-AC19-C5134958D0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB6A859D-C9E3-4439-AC19-C5134958D0A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71DD7994-08A4-4261-A0BD-7C0FD7C61B45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71DD7994-08A4-4261-A0BD-7C0FD7C61B45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71DD7994-08A4-4261-A0BD-7C0FD7C61B45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71DD7994-08A4-4261-A0BD-7C0FD7C61B45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{2D12A0CA-37C2-4F19-97A7-4B1C126625B3} = {7BA97681-5303-4665-807A-4CCD4EBAE059}
 		{3693A064-4980-4B83-AF2A-BACEA51D9AD0} = {5A8CC804-D940-45A5-90AD-8E7F1359770B}
 		{FB6A859D-C9E3-4439-AC19-C5134958D0A4} = {B1363361-220E-4D39-A647-0C6AA419DF61}
+		{71DD7994-08A4-4261-A0BD-7C0FD7C61B45} = {B1363361-220E-4D39-A647-0C6AA419DF61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47485AB2-929A-44BF-89E2-0A1649F4D07E}
